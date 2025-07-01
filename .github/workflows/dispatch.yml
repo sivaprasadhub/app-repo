@@ -12,6 +12,6 @@ jobs:
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.BUILDER_REPO_TOKEN }}
-          repository: sivaprasadhub/app-repo
+          repository: sivaprasadhub/central-repo
           event-type: build-image
           client-payload: '{"repo": "app-repo"}'

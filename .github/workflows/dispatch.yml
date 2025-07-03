@@ -14,4 +14,9 @@ jobs:
           token: ${{ secrets.BUILDER_REPO_TOKEN }}
           repository: sivaprasadhub/central-repo
           event-type: build-image
-          client-payload: '{"repo": "app-repo"}'
+          client-payload: |
+            {
+              "repo": "${{ github.repository }}",
+              "ref": "${{ github.ref }}",
+              "sha": "${{ github.sha }}"
+            }

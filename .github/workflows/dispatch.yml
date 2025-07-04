@@ -13,7 +13,7 @@ jobs:
         with:
           token: ${{ secrets.BUILDER_REPO_TOKEN }}
           repository: sivaprasadhub/central-repo
-          event-type: build-image
+          event-type: app-code-change
           client-payload: |
             {
               "repo": "${{ github.repository }}",

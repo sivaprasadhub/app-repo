@@ -6,4 +6,4 @@ COPY app.py .
 FROM gcr.io/distroless/python3
 WORKDIR /app
 COPY --from=builder /app /app
-CMD ["app.py"]     
+CMD ["app.py"]      

@@ -1,15 +1,9 @@
-# Stage 1: Build static Go binary
-FROM golang:1.22-alpine AS builder
-
+FROM python:3.10-slim-bookworm AS builder
 WORKDIR /app
+COPY app.py .
 
-COPY hello.go .
-
-RUN go build -ldflags="-s -w" -o hello hello.go
-
-# Stage 2: Create minimal runtime image with real OS
-FROM gcr.io/distroless/static-debian12
-
-COPY --from=builder /app/hello /hello
-
-ENTRYPOINT ["/hello"]  
+# Stage 2: Use Google's distroless image
+FROM gcr.io/distroless/python3
+WORKDIR /app
+COPY --from=builder /app /app
+CMD ["app.py"]

@@ -16,7 +16,7 @@ jobs:
           event-type: app-code-change
           client-payload: |
             {
-              "repo": "${{ github.repository }}",
+              "repository": "${{ github.repository }}",
               "ref": "${{ github.ref }}",
               "sha": "${{ github.sha }}"
             }

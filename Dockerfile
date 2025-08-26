@@ -1,7 +1,7 @@
 # Stage 1: Build static Go binary
 FROM golang:1.22-alpine AS builder
 
-WORKDIR /app 
+WORKDIR /app  
 
 COPY hello.go .
 

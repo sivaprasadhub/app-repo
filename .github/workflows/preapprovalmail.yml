@@ -3,6 +3,8 @@ name: PR Approval Request Email
 on:
   pull_request:
     types: [opened, reopened, synchronize]
+    paths:
+      - 'helm-chart/**'
 
 jobs:
   send-approval-email:

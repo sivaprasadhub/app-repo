@@ -2,10 +2,13 @@ name: PR Approval Request Email
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, reopened, synchronize]
+    paths:
+      - 'helm-chart/**'
 
 jobs:
   send-approval-email:
+    if: github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-latest
 
     steps:

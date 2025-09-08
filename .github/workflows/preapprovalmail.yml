@@ -7,18 +7,18 @@ on:
 jobs:
   send-approval-email:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Send email via SendGrid
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.sendgrid.net
-          server_port: 587
-          username: apikey
-          password: ${{ secrets.SENDGRID_API_KEY }}
-          subject: "Approval Needed: PR #${{ github.event.pull_request.number }} in ${{ github.repository }}"
-          to: mailtosiva369@gmail.com, sivaprasad3697@gmail.com
-          from: mailtosiva369@gmail.com
-          body: |
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Send approval email via SendGrid API
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          TO_EMAILS: "mailtosiva369@gmail.com,sivaprasad3697@gmail.com"   # comma-separated recipients
+          FROM_EMAIL: "mailtosiva369@gmail.com"                           # must be verified in SendGrid
+          SUBJECT: "Approval Needed: PR #${{ github.event.pull_request.number }} in ${{ github.repository }}"
+          BODY_TEXT: |
             A new Pull Request #${{ github.event.pull_request.number }} titled "${{ github.event.pull_request.title }}" 
             has been opened and requires your approval.
 
@@ -26,3 +26,54 @@ jobs:
 
             Thanks,
             Your CI Bot
+
+        run: |
+          # Convert TO_EMAILS to JSON array of objects
+          TO_RECIPIENTS_JSON=$(echo "$TO_EMAILS" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | jq -R . | jq -s 'map({email: .})')
+
+          # Create JSON payload
+          JSON_PAYLOAD=$(jq -n \
+            --argjson to_recipients "$TO_RECIPIENTS_JSON" \
+            --arg from_email "$FROM_EMAIL" \
+            --arg subject "$SUBJECT" \
+            --arg body_text "$BODY_TEXT" \
+            '{
+              personalizations: [
+                {
+                  to: $to_recipients
+                }
+              ],
+              from: {
+                email: $from_email
+              },
+              subject: $subject,
+              content: [
+                {
+                  type: "text/plain",
+                  value: $body_text
+                }
+              ]
+            }')
+
+          echo "Sending PR approval email to $TO_EMAILS from $FROM_EMAIL with subject: $SUBJECT"
+
+          # Send the email using SendGrid API
+          CURL_RESPONSE=$(curl -s -X POST \
+            https://api.sendgrid.com/v3/mail/send \
+            -H "Authorization: Bearer $SENDGRID_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$JSON_PAYLOAD" \
+            -w "\nHTTP_STATUS:%{http_code}")
+
+          HTTP_STATUS=$(echo "$CURL_RESPONSE" | sed -n 's/.*HTTP_STATUS:\([0-9]*\)/\1/p')
+          RESPONSE_BODY=$(echo "$CURL_RESPONSE" | sed 's/HTTP_STATUS:[0-9]*//')
+
+          echo "SendGrid API Response (HTTP Status: $HTTP_STATUS):"
+          echo "$RESPONSE_BODY"
+
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            echo "Email sent successfully! HTTP Status: $HTTP_STATUS"
+          else
+            echo "Error sending email. HTTP Status: $HTTP_STATUS"
+            exit 1
+          fi

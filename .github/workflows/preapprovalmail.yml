@@ -1,0 +1,28 @@
+name: PR Approval Request Email
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  send-approval-email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send email via SendGrid
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.sendgrid.net
+          server_port: 587
+          username: apikey
+          password: ${{ secrets.SENDGRID_API_KEY }}
+          subject: "Approval Needed: PR #${{ github.event.pull_request.number }} in ${{ github.repository }}"
+          to: mailtosiva369@gmail.com, sivaprasad3697@gmail.com
+          from: mailtosiva369@gmail.com
+          body: |
+            A new Pull Request #${{ github.event.pull_request.number }} titled "${{ github.event.pull_request.title }}" 
+            has been opened and requires your approval.
+
+            Review it here: ${{ github.event.pull_request.html_url }}
+
+            Thanks,
+            Your CI Bot

@@ -19,4 +19,4 @@ jobs:
               "repository": "${{ github.repository }}",
               "ref": "${{ github.ref }}",
               "sha": "${{ github.sha }}" 
-            }
+            } 

@@ -17,4 +17,4 @@ jobs:
           client-payload: |
             {
               "message": "Testing environment trigger"
-            }
+            } 

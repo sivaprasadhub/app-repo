@@ -12,4 +12,4 @@ FROM gcr.io/distroless/static-debian12
 
 COPY --from=builder /app/hello /hello
 
-ENTRYPOINT ["/hello"]   
+ENTRYPOINT ["/hello"]    

@@ -1,22 +1,22 @@
-# name: Trigger Builder
+name: Trigger Builder
 
-# on:
-#   push:
-#     branches: [main]
+on:
+  push:
+    branches: [main]
 
-# jobs:
-#   dispatch:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Trigger builder repo
-#         uses: peter-evans/repository-dispatch@v3
-#         with:
-#           token: ${{ secrets.BUILDER_REPO_TOKEN }}
-#           repository: sivaprasadhub/central-repo
-#           event-type: app-code-change
-#           client-payload: |
-#             {
-#               "repository": "${{ github.repository }}",
-#               "ref": "${{ github.ref }}",
-#               "sha": "${{ github.sha }}" 
-#             } 
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger builder repo
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.BUILDER_REPO_TOKEN }}
+          repository: sivaprasadhub/central-repo
+          event-type: app-code-change
+          client-payload: |
+            {
+              "repository": "${{ github.repository }}",
+              "ref": "${{ github.ref }}",
+              "sha": "${{ github.sha }}" 
+            } 

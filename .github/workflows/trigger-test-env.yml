@@ -1,0 +1,21 @@
+name: Trigger Test Env Workflow
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  dispatch_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger test-env-trigger workflow
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.BUILDER_REPO_TOKEN }}
+          repository: sivaprasadhub/central-repo
+          event-type: test-trigger # Must match the new event type
+          client-payload: |
+            {
+              "message": "Testing environment trigger"
+            }
+            

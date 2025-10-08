@@ -13,7 +13,7 @@ jobs:
         with:
           token: ${{ secrets.BUILDER_REPO_TOKEN }}
           repository: sivaprasadhub/central-repo
-          event-type: sub-scheck
+          event-type: app-code-change
           client-payload: |
             {
               "repository": "${{ github.repository }}",

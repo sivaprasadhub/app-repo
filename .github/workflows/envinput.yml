@@ -1,0 +1,30 @@
+name: Trigger Central Builder
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment to trigger (qa, prod, uat)"
+        required: true
+        type: choice
+        options:
+          - qa
+          - uat
+          - prod
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Central Repo
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.BUILDER_REPO_TOKEN }}
+          repository: sivaprasadhub/central-repo
+          event-type: ${{ github.event.inputs.environment }}
+          client-payload: |
+            {
+              "repository": "${{ github.repository }}",
+              "ref": "${{ github.ref }}",
+              "sha": "${{ github.sha }}"
+            }

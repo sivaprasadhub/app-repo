@@ -2,8 +2,8 @@ name: Trigger Central Builder
 
 
 on:
-  push:
-    branches: [main]
+  # push:
+  #   branches: [main]
   workflow_dispatch:
     inputs:
       environment:

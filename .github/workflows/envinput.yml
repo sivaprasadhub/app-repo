@@ -5,17 +5,17 @@ on:
   push:
     branches: [main]
 
-# on:
-#   workflow_dispatch:
-#     inputs:
-#       environment:
-#         description: "Target environment to trigger (qa, prod, uat)"
-#         required: true
-#         type: choice
-#         options:
-#           - qa
-#           - uat
-#           - prod
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment to trigger (qa, prod, uat)"
+        required: true
+        type: choice
+        options:
+          - qa
+          - uat
+          - prod
 
 jobs:
   dispatch:
@@ -26,8 +26,7 @@ jobs:
         with:
           token: ${{ secrets.BUILDER_REPO_TOKEN }}
           repository: sivaprasadhub/central-repo
-          #event-type: ${{ github.event.inputs.environment }}
-          event-type: qa
+          event-type: ${{ github.event.inputs.environment }}
           client-payload: |
             {
               "repository": "${{ github.repository }}",

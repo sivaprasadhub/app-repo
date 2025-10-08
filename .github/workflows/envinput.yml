@@ -1,22 +1,16 @@
 name: Trigger Central Builder
 
-
 on:
-  # push:
-  #   branches: [main]
   workflow_dispatch:
     inputs:
       environment:
-        description: "Target environment to trigger (qa, uat, prod)"
+        description: "Target environment to trigger (qa, prod, uat)"
         required: true
-        default: qa
         type: choice
         options:
           - qa
           - uat
           - prod
-
-
 
 jobs:
   dispatch:
